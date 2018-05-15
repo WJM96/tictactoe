@@ -7,7 +7,7 @@ static int cursor = 4;
 
 void doMove(char player)
 {
-	
+
 	int key = 0;
 	int done = 0;
 	do
@@ -25,7 +25,7 @@ void doMove(char player)
 		if(cursor < 0)
 			cursor = 9 + cursor;
 		move((cursor / 3)*2 + 2, (cursor % 3)*4 + 3);
-	
+
 		refresh();
 	}while(!done || grid[cursor] != ' ');
 
@@ -37,31 +37,38 @@ void doMove(char player)
 //returns NOWIN if no winner exists yet
 char checkWinner()
 {
-	char winner;
 	//check the horizontals
-	for(int x = 0; x < 3; x+= 3)
+	for(int x = 0; x < 9; x+= 3)
 	{
 		if(grid[x] == grid[x + 1] && grid[x] == grid[x + 2])
-			winner = grid[x];
+		{
+			if(grid[x] == PLAYERO || grid[x] == PLAYERX){
+				return grid[x];
+			}
+		}
 	}
 	//now the verticals
 	for(int y = 0; y < 3; y+= 1)
 	{
 		if(grid[y] == grid[y + 3] && grid[y] == grid[y + 6])
-			winner = grid[y];
+		{
+			if(grid[y] == PLAYERO || grid[y] == PLAYERX){
+				return grid[y];
+			}
+		}
 	}
 
+	char winner;
 	//now the diaganols
 	if(grid[0] == grid[4] && grid[0] == grid[8])
 		winner = grid[0];
 	if(grid[6] == grid[4] && grid[6] == grid[2])
 		winner = grid[6];
 
-
-
-
-	if(winner != PLAYERX && winner != PLAYERO)
+	if(winner != PLAYERO && winner != PLAYERX){
 		return NOWIN;
+	}
+
 	return winner;
 }
 
@@ -111,14 +118,14 @@ int main(int argc, char* argv)
 		for(int i = 0; i < 9 && winner == NOWIN; i++)
 		{
 			doMove(players[curPlayer]);
-			
-			drawGrid(players[curPlayer]);
+
 			curPlayer = ++curPlayer%2;
+			drawGrid(players[curPlayer]);
 
 			winner = checkWinner();
-			
+
 		}
-		clear();	
+		clear();
 		if(winner == NOWIN)
 		{
 			printw("No winner -- cats game\n");
@@ -128,7 +135,7 @@ int main(int argc, char* argv)
 			printw("%c has won!! gg.\n", winner);
 		}
 
-	
+
 		printw("\nagain?(y to replay) \n");
 		int again = getch();
 
@@ -140,7 +147,3 @@ int main(int argc, char* argv)
 
 	return 0;
 }
-
-
-
-
